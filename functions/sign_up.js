@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-// @ts-check
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const currTime = admin.firestore.FieldValue.serverTimestamp();
@@ -12,14 +11,17 @@ exports.SignUp = functions.runWith({
   timeoutSeconds: 30,
   memory: "1GB",
   minInstances: 0,
+  enforceAppCheck: true,
 }).https.onCall(async (data, context) => {
   if (!context.auth) {
-    throw new functions.https.HttpsError("failed-precondition", "Unauthorized User is trying to access the App.");
+    throw new functions.https.HttpsError(
+        "failed-precondition",
+        "Unauthorized User is trying to access the App.");
   }
   if (context.app == undefined) {
     throw new functions.https.HttpsError(
         "failed-precondition",
-        "The function must be called from an App-Check verified app.");
+        "The function must be called from an App Check verified app.");
   }
   const email = context.auth.token.email;
   const uid = context.auth.uid;
